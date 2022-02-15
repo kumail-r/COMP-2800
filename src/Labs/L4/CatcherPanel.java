@@ -22,7 +22,7 @@ public class CatcherPanel extends JPanel implements ActionListener {
     private int y = 0;
     private Rectangle rectangle;
     private String imageName = "";
-    private Timer timer = new Timer(1000,this);
+    private final Timer timer = new Timer(1000,this);
 
     public CatcherPanel(){
         rectangle = new Rectangle(x,y,50,50);
