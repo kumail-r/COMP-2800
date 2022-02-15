@@ -76,7 +76,6 @@ public class CatcherPanel extends JPanel implements ActionListener {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         image.paintIcon(this,g,x,y);
-
     }
 
     @Override
