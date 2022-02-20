@@ -4,6 +4,8 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -23,8 +25,10 @@ public class CatcherPanel extends JPanel implements ActionListener {
     private Rectangle rectangle;
     private String imageName = "";
     private final Timer timer = new Timer(1000,this);
+    private final JLabel speed = new JLabel("1000 ms gap");
 
     public CatcherPanel(){
+        add(speed);
         rectangle = new Rectangle(x,y,50,50);
         newImage();
         timer.start();
@@ -97,13 +101,31 @@ public class CatcherPanel extends JPanel implements ActionListener {
         }
     }
 
+    private void setTimerDelay(int x){
+        timer.setDelay(x);
+        speed.setText(x + " ms gap");
+    }
+
+    public final static CatcherPanel catcherPanel = new CatcherPanel();
     public static void main(String[] args){
         JFrame frame = new JFrame("Catching...");
+        frame.setLayout(new BorderLayout());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(500,500);
-        CatcherPanel catcherPanel = new CatcherPanel();
-        frame.add(catcherPanel);
+        frame.add(catcherPanel, BorderLayout.CENTER);
         frame.setVisible(true);
+        JSlider slider = new JSlider(50,5000,1000);
+        slider.addChangeListener(e -> catcherPanel.setTimerDelay(slider.getValue()));
+        frame.add(slider, BorderLayout.SOUTH);
+
+
+
+//        JFrame speedFrame = new JFrame("Change Speed");
+//        speedFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        speedFrame.setSize(300,80);
+
+        //speedFrame.add(slider);
+//        speedFrame.setVisible(true);
     }
 
 }
