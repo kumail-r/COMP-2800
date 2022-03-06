@@ -6,11 +6,11 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Objects;
 
 public class DrawFrame extends JFrame {
     public static DrawPanel drawPanel;
+
     public DrawFrame(){
         // initialize size, position, title, and dispose setting
         super("Graph Frame");
@@ -25,7 +25,6 @@ public class DrawFrame extends JFrame {
 
         // make visible
         setVisible(true);
-
     }
 }
 
@@ -35,6 +34,7 @@ class DrawPanel extends JPanel{
     public static ArrayList<Arc> arcs;
     private static Node buffer;
     public static JLabel instructionLabel;
+    private final JPopupMenu popupMenu;
 
     public DrawPanel(){
         // initialize nodes and arcs lists
@@ -47,11 +47,72 @@ class DrawPanel extends JPanel{
         instructionLabel = new JLabel("Click somewhere to add a node.");
         add(instructionLabel);
 
+        // initialize popupMenu
+        popupMenu = new JPopupMenu();
+
+        // initialize menuItemListener
+        OptionFrame.MenuItemListener menuItemListener = new OptionFrame.MenuItemListener();
+
+        // initialize addNode menu item
+        JMenuItem setAddNode = new JMenuItem("Add Node");
+        setAddNode.setActionCommand("addNode");
+        setAddNode.addActionListener(menuItemListener);
+        popupMenu.add(setAddNode);
+
+        // initialize deleteNode menu item
+        JMenuItem setDeleteNode = new JMenuItem("Delete Node");
+        setDeleteNode.setActionCommand("removeNode");
+        setDeleteNode.addActionListener(menuItemListener);
+        popupMenu.add(setDeleteNode);
+
+        // initialize moveNode menu item
+        JMenuItem setMoveNode = new JMenuItem("Move Node");
+        setMoveNode.setActionCommand("moveNode");
+        setMoveNode.addActionListener(menuItemListener);
+        popupMenu.add(setMoveNode);
+
+        // initialize addArc menu item
+        JMenuItem setAddArc = new JMenuItem("Add Arc");
+        setAddArc.setActionCommand("addArc");
+        setAddArc.addActionListener(menuItemListener);
+        popupMenu.add(setAddArc);
+
+        // initialize deleteNode menu item
+        JMenuItem setDeleteArc = new JMenuItem("Delete Arc");
+        setDeleteArc.setActionCommand("removeArc");
+        setDeleteArc.addActionListener(menuItemListener);
+        popupMenu.add(setDeleteArc);
+
+        // initialize reset menu item
+        JMenuItem resetOption = new JMenuItem("Reset Draw Frame");
+        resetOption.setActionCommand("reset");
+        resetOption.addActionListener(menuItemListener);
+        popupMenu.add(resetOption);
+
+        // initialize save menu item
+        JMenuItem saveOption = new JMenuItem("Save Graph to File");
+        saveOption.setActionCommand("save");
+        saveOption.addActionListener(menuItemListener);
+        popupMenu.add(saveOption);
+
+        // initialize load menu item
+        JMenuItem loadOption = new JMenuItem("Load Graph from File");
+        loadOption.setActionCommand("load");
+        loadOption.addActionListener(menuItemListener);
+        popupMenu.add(loadOption);
+
+        // show on right click
+        DrawPanel temp = this;
+
         // initialize buffer just in case
         buffer = null;
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                if (SwingUtilities.isRightMouseButton(e)) { // if it is a right click
+                    popupMenu.show(temp, e.getX(), e.getY());
+                    return; // end it here, won't go into switch since it's a right click
+                }
                 switch(mode){
                     case "addNode":
                         addNodeClick(e);
@@ -84,11 +145,9 @@ class DrawPanel extends JPanel{
         for (Node i : nodes){
             // check if node was clicked on
             if (Math.abs(x - i.x) < 5 && Math.abs(y - i.y) < 5){
-                //if it was clicked on
-                Iterator<Arc> it = arcs.iterator();
-                while (it.hasNext()){
-                    if (it.next().contains(i) > 0) it.remove(); // if arc contains node, delete arc
-                }
+                // if it was clicked on
+                // if arc contains node, delete arc
+                arcs.removeIf(arc -> arc.contains(i) > 0);
                 nodes.remove(i);
                 instructionLabel.setText("Node at " + i + " and all associated arc(s) deleted.");
                 break;
@@ -147,7 +206,7 @@ class DrawPanel extends JPanel{
             }
             else{ // buffer is not null, thus we have two nodes selected
                 for (Arc i : arcs){
-                    if ((i.contains(buffer) > 0) && (i.contains(getNode(x,y)) > 0)){
+                    if ((i.contains(buffer) > 0) && (i.contains(Objects.requireNonNull(getNode(x, y))) > 0)){
                         arcs.remove(i);
                         instructionLabel.setText("Arc going from " + buffer + " to " + getNode(x,y) + " deleted.");
                         buffer = null;
