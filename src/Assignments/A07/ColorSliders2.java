@@ -1,9 +1,10 @@
-package Assignments.A6;
+package Assignments.A07;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class ColorSliders1 extends JPanel {
+public class ColorSliders2 extends JPanel {
+    public int currentR = 0, currentG = 0, currentB = 0;
     private final JSlider redSlider; // red JSlider
     private final JSlider greenSlider; // green JSlider
     private final JSlider blueSlider; // blue JSlider
@@ -11,7 +12,7 @@ public class ColorSliders1 extends JPanel {
     private final JLabel gVal;
     private final JLabel bVal; // JLabels for the up-to-date R, G, and B values
     ColorPanel colorPanel; //
-    public ColorSliders1() {
+    public ColorSliders2() {
         colorPanel = new ColorPanel();
         setLayout(new BorderLayout()); // TEMP
         // set up JSliders and JLabels
@@ -34,18 +35,21 @@ public class ColorSliders1 extends JPanel {
                 e -> {
                     colorPanel.setRed(redSlider.getValue());
                     rVal.setText(String.valueOf(redSlider.getValue()));
+                    currentR = redSlider.getValue();
                 }
         );
         greenSlider.addChangeListener(
                 e -> {
                     colorPanel.setGreen(greenSlider.getValue());
                     gVal.setText(String.valueOf(greenSlider.getValue()));
+                    currentG = greenSlider.getValue();
                 }
         );
         blueSlider.addChangeListener(
                 e -> {
                     colorPanel.setBlue(blueSlider.getValue());
                     bVal.setText(String.valueOf(blueSlider.getValue()));
+                    currentB = blueSlider.getValue();
                 }
         );
 
@@ -80,6 +84,40 @@ public class ColorSliders1 extends JPanel {
 
         add(sliderPanel, BorderLayout.SOUTH); // place on south edge
     }
+
+    public int getCurrentR() {
+        return currentR;
+    }
+
+    public void setCurrentR(int currentR) {
+        this.currentR = currentR;
+        redSlider.setValue(currentR);
+        colorPanel.setRed(currentR);
+        rVal.setText(String.valueOf(currentR));
+    }
+
+    public int getCurrentG() {
+        return currentG;
+    }
+
+    public void setCurrentG(int currentG) {
+        this.currentG = currentG;
+        greenSlider.setValue(currentG);
+        colorPanel.setGreen(currentG);
+        gVal.setText(String.valueOf(currentG));
+    }
+
+    public int getCurrentB() {
+        return currentB;
+    }
+
+    public void setCurrentB(int currentB) {
+        this.currentB = currentB;
+        blueSlider.setValue(currentB);
+        colorPanel.setBlue(currentB);
+        bVal.setText(String.valueOf(currentB));
+    }
+
     private static class ColorPanel extends JPanel {
         private int red; // holds red value
         private int blue; // holds blue value
@@ -111,7 +149,7 @@ public class ColorSliders1 extends JPanel {
     }
     public static void main(String[] args){ // main method
         JFrame sliderFrame = new JFrame("Slider for Colors");
-        sliderFrame.add(new ColorSliders1());
+        sliderFrame.add(new ColorSliders2());
         sliderFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         sliderFrame.setSize(220,270);
         sliderFrame.setVisible(true);

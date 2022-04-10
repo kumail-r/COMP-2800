@@ -1,4 +1,4 @@
-package Assignments.A2;
+package Assignments.A02;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

@@ -1,4 +1,4 @@
-package Assignments.A4;
+package Assignments.A04;
 
 import javax.swing.*;
 import java.awt.*;

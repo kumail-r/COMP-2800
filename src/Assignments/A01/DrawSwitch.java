@@ -2,7 +2,7 @@
 //105225432
 //1/30/2022
 
-package Assignments.A1;
+package Assignments.A01;
 
 import javax.swing.*;
 import java.awt.*;

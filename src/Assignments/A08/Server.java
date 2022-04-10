@@ -1,4 +1,4 @@
-package Assignments.A8;
+package Assignments.A08;
 
 import java.io.DataOutputStream;
 import java.io.File;

@@ -1,4 +1,4 @@
-package Assignments.A8;
+package Assignments.A09;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,6 +10,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.Socket;
 
 public class Client extends JFrame {
+    private String path = "Client\\";
     public static JPanel content = new JPanel();
     public Client(){
         super("my simple applet");
@@ -30,11 +31,11 @@ public class Client extends JFrame {
         }
         setVisible(true);
     }
-    public void generate(String str){
+    public void generate(String str, String ip){
         try{
             Class<?> temp = Class.forName(str);
-            Constructor<?> constructor = temp.getConstructor();
-            Object object = constructor.newInstance();
+            Constructor<?> constructor = temp.getConstructor(new Class[]{String.class});
+            Object object = constructor.newInstance(ip);
             this.remove(content);
             content = (JPanel)object;
             this.add(content, BorderLayout.CENTER);
@@ -54,26 +55,20 @@ public class Client extends JFrame {
     }
     public void callServer(String ip){
         try {
-            Socket s = new Socket(ip, 5575);
+            Socket s = new Socket(ip, 5576);
             DataInputStream dis = new DataInputStream(s.getInputStream());
-            String fileCount = dis.readUTF();
-            System.out.println("Number of files: " + fileCount);
-            for (int i = 0; i < Integer.parseInt(fileCount); i++){
-                String name = dis.readUTF();
-                System.out.println("filename: " + name);
-                int size = Integer.parseInt(dis.readUTF());
-                System.out.println("filelength: " + size);
-                String nameWithoutClass = name.replace(".class", "");
-                System.out.println("filename without .class: " + nameWithoutClass);
-                byte[] buffer = new byte[size];
-                dis.read(buffer);
-                FileOutputStream fos = new FileOutputStream(name);
-                fos.write(buffer);
-                if (i + 1 == Integer.parseInt(fileCount)) generate(nameWithoutClass); // only use final file as jpanel
-                fos.close();
-            }
+            String fileSizeStr = dis.readUTF();
+            String fileName = dis.readUTF();
+            int size = Integer.parseInt(fileSizeStr);
+            byte[] buffer = new byte[size];
+            dis.read(buffer);
+            FileOutputStream fos = new FileOutputStream(path + fileName);
+            fos.write(buffer);
+            fos.close();
             dis.close();
             s.close();
+            String nameWithoutClass = fileName.replace(".class", "");
+            generate(nameWithoutClass, ip);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -82,3 +77,4 @@ public class Client extends JFrame {
         new Client();
     }
 }
+
